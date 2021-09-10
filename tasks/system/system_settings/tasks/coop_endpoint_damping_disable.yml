@@ -1,0 +1,24 @@
+#!/usr/bin/env ansible-playbook
+- name: COOP Endpoint Dampening (only via REST)
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    - name: Disable COOP Endpoint Dampening
+      aci_rest:
+        <<: *login_info
+        method: "post"
+        path: "/api/policymgr/mo/.xml"
+        content:
+          <polUni>
+              <infraInfra>
+                  <infraSetPol disableEpDampening="true"></infraSetPol>
+              </infraInfra>
+          </polUni>
+      delegate_to: localhost

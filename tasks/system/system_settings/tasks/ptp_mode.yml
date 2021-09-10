@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+- name: Modify Precision Time Protocol (PTP) Mode 
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    - name: Modify Precision Time Protocol (PTP) Mode to enable
+      aci_rest:
+        <<: *login_info
+        method: "post"
+        path: "/api/node/mo/uni/fabric/ptpmode.json"
+        content:
+          '{
+              "latencyPtpMode": {
+                  "attributes": {
+                      "dn": "uni/fabric/ptpmode",
+                      "state": "enabled"
+                  },
+                  "children": []
+              }
+          }'
+      delegate_to: localhost

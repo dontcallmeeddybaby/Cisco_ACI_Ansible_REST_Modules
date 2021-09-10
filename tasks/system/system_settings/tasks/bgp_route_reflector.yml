@@ -1,0 +1,33 @@
+#!/usr/bin/env ansible-playbook
+- name: Create a BGP Route Reflector
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    - name: Create a BGP Route Reflector
+      aci_rest:
+        <<: *login_info
+        method: "post"
+        path: "/api/node/mo/uni/fabric/bgpInstP-default/rr/node-{{ item.nodeId }}.json"
+        content:
+          '{
+              "bgpRRNodePEp": {
+                  "attributes": {
+                      "dn": "uni/fabric/bgpInstP-default/rr/node-{{ item.nodeId }}",
+                      "id": "{{ item.nodeId }}",
+                      "podId": "{{ item.podId }}",
+                      "rn": "node-{{ item.nodeId }}",
+                      "descr": "{{ item.description }}",
+                      "status": "{{ item.state }}"
+                  },
+                  "children": []
+              }
+          }'
+      loop: "{{bgp_route_reflector}}"
+      delegate_to: localhost

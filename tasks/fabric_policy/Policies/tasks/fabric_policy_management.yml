@@ -1,0 +1,80 @@
+#!/usr/bin/env ansible-playbook
+- name: Add a Managemt Policy
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+  - name: Add a Managemt Policy to Pods
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/comm-mgmt_pod1_ppl.json"
+      content:
+        '{
+            "commPol": {
+                "attributes": {
+                    "dn": "uni/fabric/comm-mgmt_pod1_ppl",
+                    "name": "mgmt_pod1_ppl",
+                    "rn": "comm-mgmt_pod1_ppl",
+                    "status": "created"
+                },
+                "children": [
+                    {
+                        "commHttp": {
+                            "attributes": {
+                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/http",
+                                "rn": "http",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "commHttps": {
+                            "attributes": {
+                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/https",
+                                "rn": "https",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "commShellinabox": {
+                            "attributes": {
+                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/shellinabox",
+                                "rn": "shellinabox",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "commSsh": {
+                            "attributes": {
+                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/ssh",
+                                "rn": "ssh",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "commTelnet": {
+                            "attributes": {
+                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/telnet",
+                                "rn": "telnet",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    }
+                ]
+            }
+        }'

@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+- name: Modify COOP Group Policy
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    - name: Modify COOP Group Policy to Strict
+      aci_rest:
+        <<: *login_info
+        method: "post"
+        path: "/api/node/mo/uni/fabric/pol-default.json"
+        content:
+          '{
+              "coopPol": {
+                  "attributes": {
+                      "dn": "uni/fabric/pol-default",
+                      "type": "strict"
+                  },
+                  "children": []
+              }
+          }'
+      delegate_to: localhost

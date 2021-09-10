@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+- name: Modify Fabric Wide Setting Policy
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    - name: Modify Fabric Wide Setting Policy and enable the Enforce Domain Validation
+      aci_rest:
+        <<: *login_info
+        method: "post"
+        path: "/api/node/mo/uni/infra/settings.json"
+        content:
+          '{
+              "infraSetPol": {
+                  "attributes": {
+                      "dn": "uni/infra/settings",
+                      "domainValidation": "true"
+                  },
+                  "children": []
+              }
+          }'
+      delegate_to: localhost

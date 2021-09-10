@@ -1,0 +1,75 @@
+#!/usr/bin/env ansible-playbook
+- name: modify a DNS Policy
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+  - name: Add a DNS Policy
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/dnsp-dns_{{item.pod_name}}_gpl.json"
+      content:
+        '{
+            "dnsProfile": {
+                "attributes": {
+                    "dn": "uni/fabric/dnsp-dns_{{item.pod_name}}_gpl",
+                    "name": "dns_{{item.pod_name}}_gpl",
+                    "descr": "{{item.description}}",
+                    "rn": "dnsp-dns_{{item.pod_name}}_gpl",
+                    "status": "{{item.state}}"
+                },
+                "children": [
+                    {
+                        "dnsDomain": {
+                            "attributes": {
+                                "dn": "uni/fabric/dnsp-dns_{{item.pod_name}}_gpl/dom-{{item.policy_dns_domainname}}",
+                                "name": "{{item.policy_dns_domainname}}",
+                                "isDefault": "true",
+                                "rn": "dom-{{item.policy_dns_domainname}}",
+                                "status": "{{item.state}}"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "dnsProv": {
+                            "attributes": {
+                                "dn": "uni/fabric/dnsp-dns_{{item.pod_name}}_gpl/prov-[{{item.policy_dns_server1}}]",
+                                "addr": "{{item.policy_dns_server1}}",
+                                "rn": "prov-[{{item.policy_dns_server1}}]",
+                                "status": "{{item.state}}"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "dnsProv": {
+                            "attributes": {
+                                "dn": "uni/fabric/dnsp-dns_{{item.pod_name}}_gpl/prov-[{{item.policy_dns_server2}}]",
+                                "addr": "{{item.policy_dns_server2}}",
+                                "rn": "prov-[{{item.policy_dns_server2}}]",
+                                "status": "{{item.state}}"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "dnsRsProfileToEpg": {
+                            "attributes": {
+                                "tDn": "uni/tn-mgmt/mgmtp-default/oob-default",
+                                "status": "{{item.state}}"
+                            },
+                            "children": []
+                        }
+                    }
+                ]
+            }
+        }'
+    loop: "{{fabric_policy_dns}}"

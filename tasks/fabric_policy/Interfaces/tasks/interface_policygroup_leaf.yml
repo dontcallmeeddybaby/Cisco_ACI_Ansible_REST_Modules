@@ -1,0 +1,40 @@
+#!/usr/bin/env ansible-playbook
+- name: Add a Fabric Policy for the Leaf Interface
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+    #vars working, reorganation with a inventory and groups are needed to get it in var files
+  tasks:
+  - name: Add a Fabric Policy for the Leaf Interface
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/funcprof/leportgrp-leaf_ipg.json"
+      content:
+        '{
+            "fabricLePortPGrp": {
+                "attributes": {
+                    "dn": "uni/fabric/funcprof/leportgrp-leaf_ipg",
+                    "name": "leaf_ipg",
+                    "rn": "leportgrp-leaf_ipg",
+                    "status": "created"
+                },
+                "children": [
+                    {
+                        "fabricRsL3IfPol": {
+                            "attributes": {
+                                "tnL3IfPolName": "bfd-isis_enabled_ipl",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    }
+                ]
+            }
+        }'

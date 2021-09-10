@@ -1,0 +1,93 @@
+#!/usr/bin/env ansible-playbook
+- name: Date and Time NTP Policy
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+  - name: Add a Date and Time NTP Policy to Pods
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/time-ntp_{{item.pod_name}}_ppl.json"
+      content:
+        '{"datetimePol": {
+                "attributes": {
+                    "dn": "uni/fabric/time-ntp_{{item.pod_name}}_ppl",
+                    "name": "ntp_{{item.pod_name}}_ppl",
+                    "rn": "time-ntp_{{item.pod_name}}_ppl",
+                    "status": "{{item.state}}"
+                },
+                "children": [
+                    {
+                        "datetimeNtpProv": {
+                            "attributes": {
+                                "dn": "uni/fabric/time-ntp_{{item.pod_name}}_ppl/ntpprov-{{item.policy_ntp_server1}}",
+                                "name": "{{item.policy_ntp_server1}}",
+                                "rn": "ntpprov-{{item.policy_ntp_server1}}",
+                                "status": "{{item.state}}"
+                            },
+                            "children": [
+                                {
+                                    "datetimeRsNtpProvToEpg": {
+                                        "attributes": {
+                                            "tDn": "uni/tn-mgmt/mgmtp-default/oob-default",
+                                            "status": "{{item.state}}"
+                                        },
+                                        "children": []
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "datetimeNtpProv": {
+                            "attributes": {
+                                "dn": "uni/fabric/time-ntp_{{item.pod_name}}_ppl/ntpprov-{{ item.policy_ntp_server2 }}",
+                                "name": "{{ item.policy_ntp_server2 }}",
+                                "rn": "ntpprov-{{ item.policy_ntp_server2 }}",
+                                "status": "{{item.state}}"
+                            },
+                            "children": [
+                                {
+                                    "datetimeRsNtpProvToEpg": {
+                                        "attributes": {
+                                            "tDn": "uni/tn-mgmt/mgmtp-default/oob-default",
+                                            "status": "{{item.state}}"
+                                        },
+                                        "children": []
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "datetimeNtpProv": {
+                            "attributes": {
+                                "dn": "uni/fabric/time-ntp_{{item.pod_name}}_ppl/ntpprov-{{ item.policy_ntp_server3 }}",
+                                "name": "{{ item.policy_ntp_server3 }}",
+                                "rn": "ntpprov-{{ item.policy_ntp_server3 }}",
+                                "status": "{{item.state}}"
+                            },
+                            "children": [
+                                {
+                                    "datetimeRsNtpProvToEpg": {
+                                        "attributes": {
+                                            "tDn": "uni/tn-mgmt/mgmtp-default/oob-default",
+                                            "status": "{{item.state}}"
+                                        },
+                                        "children": []
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }'
+    loop: "{{fabric_policy_ntp}}"

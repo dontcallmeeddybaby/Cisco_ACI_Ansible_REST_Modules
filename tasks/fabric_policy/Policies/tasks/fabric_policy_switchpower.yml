@@ -1,0 +1,30 @@
+#!/usr/bin/env ansible-playbook
+- name: Add a Switch Power Policy
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+  - name: Add a Switch Power Policy N+1
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/psuInstP-power_nplus1_spl.json"
+      content:
+        '{
+            "psuInstPol": {
+                "attributes": {
+                    "dn": "uni/fabric/psuInstP-power_nplus1_spl",
+                    "name": "power_nplus1_spl",
+                    "adminRdnM": "ps-rdn",
+                    "rn": "psuInstP-power_nplus1_spl",
+                    "status": "created,modified"
+                },
+                "children": []
+            }
+        }'

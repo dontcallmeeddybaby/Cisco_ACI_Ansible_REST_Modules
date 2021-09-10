@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+- name: Modify APIC Connectivity Preferences
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    - name: Modify APIC Connectivity Preferences and set it to out-of-band management connectivity
+      aci_rest:
+        <<: *login_info
+        method: "post"
+        path: "/api/node/mo/uni/fabric/connectivityPrefs.json"
+        content:
+          '{
+    	        "mgmtConnectivityPrefs": {
+    	            "attributes": {
+    	                "dn": "uni/fabric/connectivityPrefs",
+    	                "interfacePref": "ooband"
+    	            },
+    	            "children": []
+    	        }
+    	    }'
+      delegate_to: localhost

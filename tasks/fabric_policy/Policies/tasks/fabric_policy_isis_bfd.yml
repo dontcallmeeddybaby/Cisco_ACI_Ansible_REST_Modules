@@ -1,0 +1,30 @@
+#!/usr/bin/env ansible-playbook
+- name: Add a Switch Power Policy
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+  - name: Add a Switch Power Policy 
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/l3IfP-bfd-isis_enabled_ipl.json"
+      content:
+        '{
+            "l3IfPol": {
+                "attributes": {
+                    "dn": "uni/fabric/l3IfP-bfd-isis_enabled_ipl",
+                    "name": "bfd-isis_enabled_ipl",
+                    "bfdIsis": "enabled",
+                    "rn": "l3IfP-bfd-isis_enabled_ipl",
+                    "status": "created,modified"
+                },
+                "children": []
+            }
+        }'

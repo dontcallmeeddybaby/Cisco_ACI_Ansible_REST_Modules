@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+- name: Modify Date and Time
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+  tasks:
+    - name: Modify Date and Time to Time Zone {{ tz }}
+      aci_rest:
+        <<: *login_info
+        method: "post"
+        path: "/api/node/mo/uni/fabric/format-default.json"
+        content:
+          '{
+              "datetimeFormat": {
+                  "attributes": {
+                      "dn": "uni/fabric/format-default",
+                      "tz": "{{ tz }}"
+                  },
+                  "children": []
+              }
+          }'
+      delegate_to: localhost

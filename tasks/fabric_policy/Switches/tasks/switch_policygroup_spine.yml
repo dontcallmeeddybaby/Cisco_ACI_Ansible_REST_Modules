@@ -1,0 +1,40 @@
+#!/usr/bin/env ansible-playbook
+- name: Add a Fabirc Switch Policy Group Spine
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+    #vars working, reorganation with a inventory and groups are needed to get it in var files
+  tasks:
+  - name: Add a Fabirc Switch Policy Group Spine
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/funcprof/lenodepgrp-leaf_spg.json"
+      content:
+        '{
+            "fabricLeNodePGrp": {
+                "attributes": {
+                    "dn": "uni/fabric/funcprof/lenodepgrp-leaf_spg",
+                    "name": "leaf_spg",
+                    "rn": "lenodepgrp-leaf_spg",
+                    "status": "created,modified"
+                },
+                "children": [
+                    {
+                        "fabricRsPsuInstPol": {
+                            "attributes": {
+                                "tnPsuInstPolName": "power_nplus1_spl",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    }
+                ]
+            }
+        }'
