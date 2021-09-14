@@ -9,7 +9,6 @@
       host: "{{ inventory_hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
-    #vars working, reorganation with a inventory and groups are needed to get it in var files
   tasks:
   - name: Add a Fabric Policy for the Leaf Interface
     aci_rest:

@@ -14,21 +14,22 @@
     aci_rest:
       <<: *login_info
       method: "post"
-      path: "/api/node/mo/uni/fabric/comm-mgmt_pod1_ppl.json"
+      validate_certs: no
+      path: "/api/node/mo/uni/fabric/comm-mgmt_{{item.pod_name}}_ppl.json"
       content:
         '{
             "commPol": {
                 "attributes": {
-                    "dn": "uni/fabric/comm-mgmt_pod1_ppl",
-                    "name": "mgmt_pod1_ppl",
-                    "rn": "comm-mgmt_pod1_ppl",
+                    "dn": "uni/fabric/comm-mgmt_{{item.pod_name}}_ppl",
+                    "name": "mgmt_{{item.pod_name}}_ppl",
+                    "rn": "comm-mgmt_{{item.pod_name}}_ppl",
                     "status": "created"
                 },
                 "children": [
                     {
                         "commHttp": {
                             "attributes": {
-                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/http",
+                                "dn": "uni/fabric/comm-mgmt_{{item.pod_name}}_ppl/http",
                                 "rn": "http",
                                 "status": "created,modified"
                             },
@@ -38,7 +39,7 @@
                     {
                         "commHttps": {
                             "attributes": {
-                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/https",
+                                "dn": "uni/fabric/comm-mgmt_{{item.pod_name}}_ppl/https",
                                 "rn": "https",
                                 "status": "created,modified"
                             },
@@ -48,7 +49,7 @@
                     {
                         "commShellinabox": {
                             "attributes": {
-                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/shellinabox",
+                                "dn": "uni/fabric/comm-mgmt_{{item.pod_name}}_ppl/shellinabox",
                                 "rn": "shellinabox",
                                 "status": "created,modified"
                             },
@@ -58,7 +59,7 @@
                     {
                         "commSsh": {
                             "attributes": {
-                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/ssh",
+                                "dn": "uni/fabric/comm-mgmt_{{item.pod_name}}_ppl/ssh",
                                 "rn": "ssh",
                                 "status": "created,modified"
                             },
@@ -68,7 +69,7 @@
                     {
                         "commTelnet": {
                             "attributes": {
-                                "dn": "uni/fabric/comm-mgmt_pod1_ppl/telnet",
+                                "dn": "uni/fabric/comm-mgmt_{{item.pod_name}}_ppl/telnet",
                                 "rn": "telnet",
                                 "status": "created,modified"
                             },
@@ -78,3 +79,4 @@
                 ]
             }
         }'
+        loop: "{{fabric_policy_management}}"

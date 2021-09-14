@@ -1,0 +1,90 @@
+#!/usr/bin/env ansible-playbook
+- name: Modify aFabirc Switch Profile Spine
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+    #vars working, reorganation with a inventory and groups are needed to get it in var files
+  tasks:
+  - name: Modify a Fabirc Switch Profile Spine
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      validate_certs: no
+      path: "/api/node/mo/uni/fabric/spprof-{{item.spine_switch_profile}}.json"
+      content:
+        '{
+            "fabricSpineP": {
+                "attributes": {
+                    "dn": "uni/fabric/spprof-{{item.spine_switch_profile}}",
+                    "name": "{{item.spine_switch_profile}}",
+                    "rn": "spprof-{{item.spine_switch_profile}}",
+                    "status": "{{item.state}}"
+                },
+                "children": [
+                    {
+                        "fabricSpineS": {
+                            "attributes": {
+                                "dn": "uni/fabric/spprof-{{item.spine_switch_profile}}/spines-{{item.switch_profile_selector}}-typ-range",
+                                "type": "range",
+                                "name": "{{item.switch_profile_selector}}",
+                                "rn": "spines-{{item.switch_profile_selector}}-typ-range",
+                                "status": "{{item.state}}"
+                            },
+                            "children": [
+                                {
+                                    "fabricNodeBlk": {
+                                        "attributes": {
+                                            "dn": "uni/fabric/spprof-{{item.spine_switch_profile}}/spines-{{item.switch_profile_selector}}-typ-range/nodeblk-{{item.nodeblk_1}}",
+                                            "from_": "{{item.nodeblk_1_from}}",
+                                            "to_": "{{item.nodeblk_1_to}}",
+                                            "name": "{{item.nodeblk_1}}",
+                                            "rn": "nodeblk-{{item.nodeblk_1}}",
+                                            "status": "{{item.state}}"
+                                        },
+                                        "children": []
+                                    }
+                                },
+                                {
+                                    "fabricNodeBlk": {
+                                        "attributes": {
+                                            "dn": "uni/fabric/spprof-{{item.spine_switch_profile}}/spines-{{item.switch_profile_selector}}-typ-range/nodeblk-{{item.nodeblk_2}}",
+                                            "from_": "{{item.nodeblk_2_from}}",
+                                            "to_": "{{item.nodeblk_2_to}}",
+                                            "name": "{{item.nodeblk_2}}",
+                                            "rn": "nodeblk-{{item.nodeblk_2}}",
+                                            "status": "{{item.state}}"
+                                        },
+                                        "children": []
+                                    }
+                                },
+                                {
+                                    "fabricRsSpNodePGrp": {
+                                        "attributes": {
+                                            "tDn": "uni/fabric/funcprof/spnodepgrp-{{item.switch_policy_group}}",
+                                            "status": "created"
+                                        },
+                                        "children": []
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "fabricRsSpPortP": {
+                            "attributes": {
+                                "tDn": "uni/fabric/spportp-{{item.interface_profile}}",
+                                "status": "{{item.state}}"
+                            },
+                            "children": []
+                        }
+                    }
+                ]
+            }
+        }'
+    loop: "{{ fabric_switch_profile_spine }}"

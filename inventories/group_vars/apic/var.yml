@@ -1,0 +1,535 @@
+ansible_python_interpreter: "/usr/bin/env python"
+
+# default value are find in the /inventory/all/var.yml
+
+# Time Zone for System Settings
+tz: p120_Europe-Berlin
+
+#This is the list for registering Nodes in the ACI
+registernodes:
+  - serial: TEP-1-101
+    nodeId: 101
+    switchname: leaf101
+    state: "{{vari['state']}}"
+  - serial: TEP-1-102
+    nodeId: 102
+    switchname: leaf102
+    state: "{{vari['state']}}"
+  - serial: TEP-1-105
+    nodeId: 103
+    switchname: leaf103
+    state: "{{vari['state']}}"
+  - serial: TEP-1-106
+    nodeId: 106
+    switchname: leaf104
+    state: "{{vari['state']}}"
+  - serial: TEP-1-103
+    nodeId: 1001
+    switchname: spine1001
+    state: "{{vari['state']}}"
+  - serial: TEP-1-104
+    nodeId: 1002
+    switchname: spine1002
+    state: "{{vari['state']}}"
+
+multipod_fabricandtanent:
+#Multipod Fabric and Tanent Configuration
+  - pod: pod1
+    tepPool: 10.200.0.0/16
+    RoutablePodSubnet: 10.204.0.0/22
+    reserveAddressCount: 4
+    multipodnamefirst: multipod-1001_aep
+    multipodnamesecound: multipod-1002_aep
+    multipodnameinterfacepolicygroupfirst: 1001_ipg
+    multipodnameinterfacepolicygroupsecound: 1002_ipg
+    multipodnameinterfaceprofilefirst: 1001_ipr
+    multipodnameinterfaceprofilesecound: 1002_ipr
+    multipodnameinterfaceprofileselectorfirst: eth1_31-32_ips
+    multipodnameinterfaceprofileselectorsecound: eth1_31-32_ips
+    multipodnameinterfaceprofileselectorslotfirst: 1
+    multipodnameinterfaceprofileselectorportfromPortfirst: 31
+    multipodnameinterfaceprofileselectorporttoPortfirst: 32
+    status: "{{vari['status']}}"
+    
+
+fabric_policy_dns:
+  - pod_name: "pod1"
+    policy_dns_domainname: "dclab.local"
+    policy_dns_server1: "10.100.0.1"
+    policy_dns_server2: "10.200.0.1"
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+  - pod_name: "pod2"
+    policy_dns_domainname: "dclab.local"
+    policy_dns_server1: "10.100.0.1"
+    policy_dns_server2: "10.200.0.1"
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+
+fabric_policy_ntp:
+  - pod_name: "pod1"
+    policy_ntp_server1: ptbtime1.ptb.de
+    policy_ntp_server2: 192.53.103.104
+    policy_ntp_server3: time.google.com
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+  - pod_name: "pod2"
+    policy_ntp_server1: ptbtime1.ptb.de
+    policy_ntp_server2: 192.53.103.104
+    policy_ntp_server3: time.google.com
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+
+
+fabric_policy_snmp:
+  - pod_name: "pod1"
+    policy_snmp_service: "snmpservice-Group"
+    policy_snmp_server1: "PRTG1.service.local"
+    policy_snmp_serverip1: 10.0.0.1
+    policy_snmp_server2: "PRTG1.service.local"
+    policy_snmp_serverip2: 10.0.0.2
+    authKey: "asd123456789"
+    privKey: "asd123456789"
+    privType: "aes-128"
+    authType: "hmac-sha1-96"
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+  - pod_name: "pod2"
+    policy_snmp_service: "snmpservice-Group"
+    policy_snmp_server1: "PRTG1.service.local"
+    policy_snmp_serverip1: 10.0.0.1
+    policy_snmp_server2: "PRTG1.service.local"
+    policy_snmp_serverip2: 10.0.0.2
+    authKey: "asd123456789"
+    privKey: "asd123456789"
+    privType: "aes-128"
+    authType: "hmac-sha1-96"
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+
+fabric_policy_management:
+  - pod_name: "pod1"
+  - pod_name: "pod2"
+
+#Fabirc Switch Profile Leaf
+fabric_switch_profile_leaf:
+  - leaf_switch_profile: c93240yc-fx2_lsp
+    switch_profile_selector: c93240yc-fx2_sps
+    nodeblk_1: nodeblk_1
+    nodeblk_1_from: 101
+    nodeblk_1_to: 102
+    nodeblk_2: nodeblk_2
+    nodeblk_2_from: 201
+    nodeblk_2_to: 202
+    switch_policy_group: leaf_spg
+    interface_profile: leaf_c93240yc-fx2_ipr
+    state: "{{vari['status']}}"
+  - leaf_switch_profile: c93108tc-fx_lsp
+    switch_profile_selector: c93108tc-fx_sps
+    nodeblk_1: nodeblk_1
+    nodeblk_1_from: 101
+    nodeblk_1_to: 102
+    nodeblk_2: nodeblk_2
+    nodeblk_2_from: 201
+    nodeblk_2_to: 202
+    switch_policy_group: leaf_spg
+    interface_profile: leaf_c93108tc-fx_ipr
+    state: "{{vari['status']}}"
+  - leaf_switch_profile: c9396px-fx_lsp
+    switch_profile_selector: c9396px-fx_sps
+    nodeblk_1: nodeblk_1
+    nodeblk_1_from: 101
+    nodeblk_1_to: 102
+    nodeblk_2: nodeblk_2
+    nodeblk_2_from: 201
+    nodeblk_2_to: 202
+    switch_policy_group: leaf_spg
+    interface_profile: leaf_c9396px-fx_ipr
+    state: "{{vari['status']}}"
+
+fabric_switch_profile_spine:
+  - spine_switch_profile: c9332c_ssp
+    switch_profile_selector: c9332c_sps
+    nodeblk_1: nodeblk_1
+    nodeblk_1_from: 1001
+    nodeblk_1_to: 1002
+    nodeblk_2: nodeblk_2
+    nodeblk_2_from: 2001
+    nodeblk_2_to: 2002
+    switch_policy_group: spine_spg
+    interface_profile: spine_c9332c_ipr
+    state: "{{vari['status']}}"
+
+# VLAN Pool and VLAN Pool Encap Playbooks
+vlan_pool:
+  - vlan_pool_name: prod_vlp
+    pool_allocation_mode: dynamic
+    vlan_pool_state: "{{vari['state']}}"
+    vlan_pool_description: Production VLAN Pool
+    vlan_pool_block_start: 20
+    vlan_pool_block_stop: 50
+    vlan_pool_block_name: prod_vlp
+    vlan_pool_encap_description: Production VLAN Pool
+  - vlan_pool_name: dmz_vlp
+    pool_allocation_mode: dynamic
+    vlan_pool_state: "{{vari['state']}}"
+    vlan_pool_description: DMZ VLAN Pool
+    vlan_pool_block_start: 60
+    vlan_pool_block_stop: 70
+    vlan_pool_block_name: dmz_vlp
+    vlan_pool_encap_description: DMZ VLAN Pool
+  - vlan_pool_name: multipod_vlp
+    pool_allocation_mode: dynamic
+    vlan_pool_state: "{{vari['state']}}"
+    vlan_pool_block_start: 4
+    vlan_pool_block_stop: 4
+    vlan_pool_block_name: multipod_vlp
+    vlan_pool_encap_description: Multipod VLAN Pool
+    vlan_pool_description: Multipod VLAN Pool
+
+# Domains - Physical Domain and virtual VMM Domain
+phys_domain:
+  - domain_name: server_phd
+    domain_type: phys
+    domain_state: "{{vari['state']}}"
+    aaep_name: network-centric_aep
+    aaep_state: "{{vari['state']}}" 
+  - domain_name: existing-l2-ebd
+    domain_type: l2dom
+    domain_state: "{{vari['state']}}"
+    aaep_name: network-centric_aep
+    aaep_state: "{{vari['state']}}" 
+  - domain_name: ipn-erd
+    domain_type: l3dom
+    domain_state: "{{vari['state']}}"
+    aaep_name: l3out 
+    aaep_state: "{{vari['state']}}"
+virtual_domain: 
+  - domain_name: vmw-prod1-vmd
+    domain_type: vmm 
+    domain_state: "{{vari['state']}}"
+    vmm_provider: vmware
+    aaep_name: vmm_aep 
+    aaep_state: "{{vari['state']}}" 
+  - domain_name: rh-prod1-vmd
+    domain_type: vmm 
+    domain_state: "{{vari['state']}}"
+    vmm_provider: redhat
+    aaep_name: vmm_aep 
+    aaep_state: "{{vari['state']}}" 
+  - domain_name: k8s-prod1-vmd
+    domain_type: vmm 
+    domain_state: "{{vari['state']}}"
+    vmm_provider: kubernetes
+    aaep_name: vmm_aep 
+    aaep_state: "{{vari['state']}}" 
+
+# AAEP
+aaep:
+  - aaep_name: network-centric_aep
+    aaep_state: "{{vari['state']}}"
+    aaep_description: Network centric aaep
+  - aaep_name: vmm_aep 
+    aaep_state: "{{vari['state']}}"
+    aaep_description: VMM aaep
+  - aaep_name: l3out
+    aaep_state: "{{vari['state']}}" 
+    aaep_description: L3 Out aaep
+
+
+# Access Policy / Interfaces / Leaf Interface / Policy Groups 
+# Interface Policy Group
+## Note to  "lag_type", which is not so easy to remember
+## Selector for the type of leaf policy group we want to create.
+## - leaf for Leaf Access Port Policy Group
+## - link for Port Channel (PC)
+## - node for Virtual Port Channel (VPC)
+## Link to https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_leaf_policy_group_module.html#ansible-collections-cisco-aci-aci-interface-policy-leaf-policy-group-module
+interface_policy_leaf_policy_group_pc:
+  - lag_type: link
+    policy_group: 00-TEMPLATE_pc_SERVERNAME_ipg
+    description: "{{vari['description']}}"
+    link_level_policy: link_inherit-auto_ipl
+    cdp_policy: cdp_on_ipl
+    lldp_policy: lldp_on_ipl
+    port_channel_policy: pc_lacp-active_ipl
+    stp_interface_policy: stp_filter-off-guard-on_ipl
+    mcp_policy: mcp_off_ipl
+    aep: network-centric_aep
+    state: "{{vari['state']}}"
+interface_policy_leaf_policy_group_vpc:
+  - lag_type: node
+    policy_group: 00-TEMPLATE_vpc_SERVERNAME_ipg
+    description: "{{vari['description']}}"
+    link_level_policy: link_inherit-auto_ipl
+    cdp_policy: cdp_on_ipl
+    lldp_policy: lldp_on_ipl
+    port_channel_policy: pc_lacp-active_ipl
+    stp_interface_policy: stp_filter-off-guard-on_ipl
+    mcp_policy: mcp_off_ipl
+    aep: network-centric_aep
+    state: "{{vari['state']}}"
+interface_policy_leaf_policy_group_access:
+  - lag_type: leaf
+    policy_group: 00-TEMPLATE_access_SERVERNAME_ipg
+    description: "{{vari['description']}}"
+    link_level_policy: link_inherit-auto_ipl
+    cdp_policy: cdp_on_ipl
+    lldp_policy: lldp_on_ipl
+    stp_interface_policy: stp_filter-off-guard-on_ipl
+    mcp_policy: mcp_off_ipl
+    aep: network-centric_aep
+    state: "{{vari['state']}}"
+
+
+# Access Policy / Interfaces / Leaf Interface / Profile 
+# Interface Profile
+interface_profile:
+  - interface_profile: 101_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 102_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 103_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 104_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 101-102_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 103-104_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 201_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 202_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 203_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 204_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 201-202_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+  - interface_profile: 203-204_ipr
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+# Switch Leaf Profile
+# lsp > Leaf Switch Profile
+# sps > Switch Profile Selector
+switch_policy_leaf_profile:
+  - leaf_profile: 101_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 101_sps
+    leaf_node_blk: 101_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 101
+    to: 101
+    policy_group: leaf_spg
+  - leaf_profile: 102_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 102_sps
+    leaf_node_blk: 102_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 102
+    to: 102
+    policy_group: leaf_spg
+  - leaf_profile: 103_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 103_sps
+    leaf_node_blk: 103_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 103
+    to: 103
+    policy_group: leaf_spg
+  - leaf_profile: 104_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 104_sps
+    leaf_node_blk: 104_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 104
+    to: 104
+    policy_group: leaf_spg
+  - leaf_profile: 101-102_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 101-102_sps
+    leaf_node_blk: 101-102_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 101
+    to: 102
+    policy_group: leaf_spg
+  - leaf_profile: 103-104_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 103-104_sps
+    leaf_node_blk: 103-104_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 103
+    to: 104
+    policy_group: leaf_spg
+  - leaf_profile: 201_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 201_sps
+    leaf_node_blk: 201_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 201
+    to: 201
+    policy_group: leaf_spg
+  - leaf_profile: 202_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 202_sps
+    leaf_node_blk: 202_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 202
+    to: 202
+    policy_group: leaf_spg
+  - leaf_profile: 203_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 203_sps
+    leaf_node_blk: 203_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 203
+    to: 203
+    policy_group: leaf_spg
+  - leaf_profile: 204_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 204_sps
+    leaf_node_blk: 204_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 204
+    to: 204
+    policy_group: leaf_spg
+  - leaf_profile: 201-202_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 201-202_sps
+    leaf_node_blk: 201-202_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 201
+    to: 202
+    policy_group: leaf_spg
+  - leaf_profile: 203-204_lsp
+    description: "{{vari['description']}}"
+    state: "{{vari['state']}}"
+    leaf: 203-204_sps
+    leaf_node_blk: 203-204_sps
+    leaf_node_blk_description: "{{vari['description']}}"
+    from: 203
+    to: 204
+    policy_group: leaf_spg
+switch_policy_spine_profile:
+# ssp > spine Switch Profile
+# sps > Switch Profile Selector
+  - nodeId: 1001
+    name: 1001_sps
+    node_blk: 1001_sps
+    state: "{{vari['status']}}"
+    policy_group: spine_spg
+  - nodeId: 1002
+    name: 1002_sps
+    node_blk: 1002_sps
+    state: "{{vari['status']}}"
+    policy_group: spine_spg
+  - nodeId: 2001
+    name: 2001_sps
+    node_blk: 2001_sps
+    state: "{{vari['status']}}"
+    policy_group: spine_spg
+  - nodeId: 2002
+    name: 2002_sps
+    node_blk: 2002_sps
+    state: "{{vari['status']}}"
+    policy_group: spine_spg
+
+bgp_route_reflector:
+  - nodeId: 1001
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+    podId: 1
+  - nodeId: 1002
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+    podId: 1
+  - nodeId: 2001
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+    podId: 2
+  - nodeId: 2002
+    description: "{{vari['description']}}"
+    state: "{{vari['status']}}"
+    podId: 2
+
+maintenance_policy:
+  - name: maintenance_policy_simple
+    scheduler: simpleScheduler
+    runmode: pauseOnlyOnFailures
+    state: "{{vari['state']}}"
+    graceful: yes
+maintenance_group:
+  - group: pod1-odd
+    policy: maintenance_policy_simple
+    state: "{{vari['state']}}"
+  - group: pod1-even
+    policy: maintenance_policy_simple
+    state: "{{vari['state']}}"
+  - group: pod2-odd
+    policy: maintenance_policy_simple
+    state: "{{vari['state']}}"
+  - group: pod2-even
+    policy: maintenance_policy_simple
+    state: "{{vari['state']}}"
+maintenance_group_node:
+  - node: 101
+    group: pod1-odd
+  - node: 102
+    group: pod1-even
+  - node: 103
+    group: pod1-odd
+  - node: 104
+    group: pod1-even
+  - node: 1001
+    group: pod1-odd
+  - node: 1002
+    group: pod1-even
+  - node: 201
+    group: pod2-odd
+  - node: 202
+    group: pod2-even
+  - node: 203
+    group: pod2-odd
+  - node: 204
+    group: pod2-even
+  - node: 2001
+    group: pod2-odd
+  - node: 2002
+    group: pod2-even
+# L3 Out
+l3out:
+# name is the L3out Naming
+  - name: prod_l3out
+    tenant: prod_tn
+    description: "{{vari['description']}}"
+    domain: prod_l3out_bd
+    vrf: prod_01_vrf
+    l3protocol: ospf
+    state: "{{vari['state']}}"
+
+#Multipod
+#is used in tasks/inventory/tasks/multipod_add_vlan2multipod_vlp.yml
+MULTIPODVLANID: 4

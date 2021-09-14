@@ -1,5 +1,0 @@
-#NTP Addresses for Pod1
-#notworking, reorganation with a inventory and groups are needed
-#policy_ntp_server1: 10.192.126.13
-#policy_ntp_server2: 10.192.126.14
-#policy_ntp_server3: time.google.com

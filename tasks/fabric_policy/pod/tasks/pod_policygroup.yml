@@ -1,0 +1,59 @@
+#!/usr/bin/env ansible-playbook
+- name: Add a Fabirc Pod Policy Group
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+    podname: pod1
+    #vars working, reorganation with a inventory and groups are needed to get it in var files
+  tasks:
+  - name: Add a Fabirc Pod Policy Group for {{podname}}
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/funcprof/podpgrp-{{podname}}_ppg.json"
+      content:
+        '{
+            "fabricPodPGrp": {
+                "attributes": {
+                    "dn": "uni/fabric/funcprof/podpgrp-{{podname}}_ppg",
+                    "name": "{{podname}}_ppg",
+                    "rn": "podpgrp-{{podname}}_ppg",
+                    "status": "created,modified"
+                },
+                "children": [
+                    {
+                        "fabricRsTimePol": {
+                            "attributes": {
+                                "tnDatetimePolName": "ntp_{{podname}}_ppl",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "fabricRsCommPol": {
+                            "attributes": {
+                                "tnCommPolName": "mgmt_{{podname}}_ppl",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    },
+                    {
+                        "fabricRsSnmpPol": {
+                            "attributes": {
+                                "tnSnmpPolName": "snmp_{{podname}}_ppl",
+                                "status": "created,modified"
+                            },
+                            "children": []
+                        }
+                    }
+                ]
+            }
+        }'

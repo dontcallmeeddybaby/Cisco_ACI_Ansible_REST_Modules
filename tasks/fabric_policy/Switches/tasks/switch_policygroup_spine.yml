@@ -15,6 +15,7 @@
     aci_rest:
       <<: *login_info
       method: "post"
+      validate_certs: no
       path: "/api/node/mo/uni/fabric/funcprof/lenodepgrp-leaf_spg.json"
       content:
         '{

@@ -1,19 +1,21 @@
 #!/usr/bin/env ansible-playbook
-- name: modify a DNS Policy
+- name: Modify a DNS Policy
   hosts: apic
   connection: local
   gather_facts: False
   ignore_errors: yes
+  validate_certs: False
   vars:
     login_info: &login_info
       host: "{{ inventory_hostname }}"
       username: "{{ username }}"
       password: "{{ password }}"
   tasks:
-  - name: Add a DNS Policy
+  - name: Modify a DNS Policy
     aci_rest:
       <<: *login_info
       method: "post"
+      validate_certs: no
       path: "/api/node/mo/uni/fabric/dnsp-dns_{{item.pod_name}}_gpl.json"
       content:
         '{

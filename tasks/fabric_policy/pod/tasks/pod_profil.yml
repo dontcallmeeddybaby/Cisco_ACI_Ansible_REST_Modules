@@ -1,0 +1,66 @@
+#!/usr/bin/env ansible-playbook
+- name: Add a Fabirc Pod Profil
+  hosts: apic
+  connection: local
+  gather_facts: False
+  ignore_errors: yes
+  vars:
+    login_info: &login_info
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+    podname: pod1
+    #vars working, reorganation with a inventory and groups are needed to get it in var files
+  tasks:
+  - name: Add a Fabirc Pod Profil for {{podname}}
+    aci_rest:
+      <<: *login_info
+      method: "post"
+      path: "/api/node/mo/uni/fabric/podprof-{{podname}}_ppr.json"
+      content:
+        '{
+            "fabricPodP": {
+                "attributes": {
+                    "dn": "uni/fabric/podprof-{{podname}}_ppr",
+                    "name": "{{podname}}_ppr",
+                    "rn": "podprof-{{podname}}_ppr",
+                    "status": "created"
+                },
+                "children": [
+                    {
+                        "fabricPodS": {
+                            "attributes": {
+                                "dn": "uni/fabric/podprof-{{podname}}_ppr/pods-pps-typ-range",
+                                "name": "pps",
+                                "type": "range",
+                                "rn": "pods-pps-typ-range",
+                                "status": "created"
+                            },
+                            "children": [
+                                {
+                                    "fabricPodBlk": {
+                                        "attributes": {
+                                            "dn": "uni/fabric/podprof-{{podname}}_ppr/pods-pps-typ-range/podblk-20fcb5b3ee11f605",
+                                            "to_": "1",
+                                            "name": "20fcb5b3ee11f605",
+                                            "rn": "podblk-20fcb5b3ee11f605",
+                                            "status": "created"
+                                        },
+                                        "children": []
+                                    }
+                                },
+                                {
+                                    "fabricRsPodPGrp": {
+                                        "attributes": {
+                                            "tDn": "uni/fabric/funcprof/podpgrp-{{podname}}_ppg",
+                                            "status": "created"
+                                        },
+                                        "children": []
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }'

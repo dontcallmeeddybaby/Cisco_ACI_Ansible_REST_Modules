@@ -1,0 +1,7 @@
+ansible_python_interpreter: "/usr/bin/env python"
+
+# default value
+vari:
+  status: created,modified
+  description: created with ansible
+  state: present

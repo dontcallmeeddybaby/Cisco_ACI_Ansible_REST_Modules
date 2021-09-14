@@ -14,6 +14,7 @@
     aci_rest:
       <<: *login_info
       method: "post"
+      validate_certs: no
       path: "/api/node/mo/uni/fabric/time-ntp_{{item.pod_name}}_ppl.json"
       content:
         '{"datetimePol": {
